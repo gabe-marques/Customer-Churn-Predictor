@@ -209,6 +209,7 @@ __marimo__/
 # raw dataset and artifacts
 data/raw/
 artifacts/
+*.joblib
 
 
 
