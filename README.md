@@ -12,10 +12,10 @@ management, deterministic runs, and artifact tracking.
 
 Rather than focusing only on model accuracy, this project is designed to demonstrate:
 
--   Config-driven experiment management\
--   Deterministic training via seed control\
--   Structured artifact output (models, metrics, logs)\
--   Clean CLI entrypoints for training and evaluation\
+-   Config-driven experiment management
+-   Deterministic training via seed control
+-   Structured artifact output (models, metrics, logs)
+-   Clean CLI entrypoints for training and evaluation
 -   Separation of configuration and application logic
 
 This mirrors how batch ML systems are designed in real production environments.
@@ -38,25 +38,29 @@ python -m src.cli train --config configs/base.yaml
 
 The CLI:
 
--   Parses commands (`train`, `eval`, `predict`)\
--   Loads YAML configuration files\
--   Supports hierarchical config inheritance\
--   Initializes logging\
--   Sets deterministic seeds\
--   Creates structured artifact directories\
+-   Parses commands (`train`, `eval`, `predict`)
+-   Loads YAML configuration files
+-   Supports hierarchical config inheritance
+-   Initializes logging
+-   Sets deterministic seeds
+-   Creates structured artifact directories
 -   Saves the exact run configuration used
 
 ### Configuration System
 
 Configurations are defined in YAML files:
 
-configs/ ├── base.yaml └── xgb.yaml
+```text
+configs/ 
+├── base.yaml 
+└── xgb.yaml
+```
 
 Features:
 
--   Supports `inherit:` for experiment overrides\
--   Deep-merges configuration dictionaries\
--   Validates required config keys\
+-   Supports `inherit:` for experiment overrides
+-   Deep-merges configuration dictionaries
+-   Validates required config keys
 -   Keeps experiments reproducible and version-controlled
 
 Example:
@@ -69,30 +73,59 @@ model: name: xgboost params: n_estimators: 400
 
 Each run:
 
--   Logs to console\
--   Writes `artifacts/run.log`\
--   Stores `run_config.json`\
+-   Logs to console
+-   Writes `artifacts/run.log`
+-   Stores `run_config.json`
 -   Sets global random seed for reproducibility
 
 ### Artifact Structure
 
 Successful runs generate structured outputs:
 
-artifacts/ ├── run.log └── metrics/ └── run_config.json
+```text
+artifacts/ 
+├── run.log 
+├── models/
+├── plots/
+└── metrics/
+    └── run_config.json
+```
 
 Future steps will add:
 
--   Trained model artifacts\
--   Evaluation metrics\
+-   Trained model artifacts
+-   Evaluation metrics
 -   ROC and confusion matrix plots
 
 ---
 
 ## Project Structure
 
-customer-churn-predictor/ ├── configs/ ├── data/ │ └── raw/ ├── src/ │
-├── cli.py │ ├── config.py │ └── utils/ ├── artifacts/ ├──
-requirements.txt └── README.md
+```text
+project/
+│
+├── configs/                   
+│   ├── base.yaml              # Default config (logistic regression)
+│   └── xgb.yaml               # XGBoost override config
+│
+├── data/                      # Data stored locally
+│   └──raw/
+│      └──telcho_churn.csv
+│
+├── src/
+│   ├── __init__.py 
+│   ├── cli.py                 # Entry point (train/eval/predict)
+│   ├── config.py              # YAML loader + inheritance
+│   │
+│   └── utils/                 # Share infrastructure utilities
+│       ├── logging.py         # Console + file logging
+│       ├── paths.py           # Artifacts directory manager
+│       └── seed.py            # Reproducibility
+│
+├── .gitignore                 # Ignore data, artifacts, envs
+├── requirements.txt           # Python dependencies 
+└── README.md                  # Project overview (engineering-focused)            
+```
 
 ---
 
@@ -105,7 +138,7 @@ the repository.
 
 To run locally:
 
-1.  Download the dataset\
+1.  Download the dataset
 2.  Place the CSV at:
 
 data/raw/telco_churn.csv
@@ -116,10 +149,10 @@ data/raw/telco_churn.csv
 
 Upcoming development phases:
 
--   Data ingestion and schema validation\
--   Feature preprocessing pipeline (ColumnTransformer)\
--   Model training and registry\
--   Evaluation metrics and visualization\
+-   Data ingestion and schema validation
+-   Feature preprocessing pipeline (ColumnTransformer)
+-   Model training and registry
+-   Evaluation metrics and visualization
 -   Basic test coverage
 
 ---
@@ -128,9 +161,9 @@ Upcoming development phases:
 
 This repository demonstrates the ability to:
 
--   Structure ML systems beyond notebooks\
--   Separate configuration from logic\
--   Implement reproducible training workflows\
+-   Structure ML systems beyond notebooks
+-   Separate configuration from logic
+-   Implement reproducible training workflows
 -   Design for traceability and maintainability
 
 It focuses on building systems, not just models.
