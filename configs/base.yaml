@@ -4,7 +4,7 @@ run:
   log_level: INFO
 
 data:
-  raw_path: ../data/raw/telco_churn.csv
+  raw_path: data/raw/telco_churn.csv
   target: Churn
   test_size: 0.2
 
