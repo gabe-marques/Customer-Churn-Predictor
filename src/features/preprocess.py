@@ -24,7 +24,7 @@ def infer_column_types(df: pd.DataFrame, target: str, drop_cols: list[str]) -> t
     
     Parameters:
         df (pd.DataFrame): Input churn dataset (customer_churn.csv)
-        target (str): Ignore
+        target (str): Ignore target column
         drop_cols (list): Irrelevant columns
     
     Returns:
@@ -36,13 +36,38 @@ def infer_column_types(df: pd.DataFrame, target: str, drop_cols: list[str]) -> t
 
     return numeric_cols, categorical_cols
 
-def build_processor(df: pd.DataFrame, target: str, cfg: FeatureConfig) -> tuple[ColumnTransformer, list[str], list[str]]:
+def build_preprocessor(df: pd.DataFrame, target: str, cfg: FeatureConfig) -> tuple[ColumnTransformer, list[str], list[str]]:
     """
     Build a ColumnTransformer that:
         - imputes and scales numeric columns 
-        - imputes and one-hot encodes categorical columns (optional)
+        - imputes and one-hot encodes categorical columns 
 
     Returns:
         preprocessor, numeric_cols, categorical_cols
     """
-    return 'TODO: build_processor'
+    num_cols, cat_cols = infer_column_types(df, target, cfg.drop_cols)
+
+    # Numeric pipeline: impute -> scale (optional)
+    num_steps = [('imputer', SimpleImputer(strategy=cfg.numeric_impute))]
+    if cfg.scaling == 'standard':
+        num_steps.append(('scaler', StandardScaler()))
+    numeric_pipe = Pipeline(steps=num_steps)
+
+    # Categorical pipeline: impute -> onehot encoding (optional)
+    cat_steps = [('imputer', SimpleImputer(strategy=cfg.categorical_impute))]
+    if cfg.one_hot:
+        cat_steps.append(('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))) # sparse_output=False gives a dense numpy array (easier to debug)
+    categorical_pipe = Pipeline(steps=cat_steps)
+
+    # Apply numeric and categorical pipelines to their respective columns
+    # and combine the outputs into a single model-ready feature matrix
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_pipe, num_cols),
+            ('cat', categorical_pipe, cat_cols)
+        ],
+        remainder='drop',
+        verbose_feature_names_out=False
+    )
+
+    return preprocessor, num_cols, cat_cols
